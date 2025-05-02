@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mini Chatbot</title>
+</head>
+<body>
+    <h1>🤖 Mon mini chatbot</h1>
+    <input type="text" id="userInput" placeholder="Écris ton message..." />
+    <button onclick="sendMessage()">Envoyer</button>
+    <p id="response"></p>
+
+    <script>
+        async function sendMessage() {
+            const message = document.getElementById("userInput").value;
+            const responseElement = document.getElementById("response");
+
+            const res = await fetch("/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ message: message })
+            });
+
+            const data = await res.json();
+
+            if (data.reply) {
+                responseElement.textContent = "🤖: " + data.reply;
+            } else {
+                responseElement.textContent = "⚠️ Erreur : " + data.error;
+            }
+        }
+    </script>
+</body>
+</html>
