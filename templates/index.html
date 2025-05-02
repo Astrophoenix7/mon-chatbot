@@ -1,36 +1,88 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>Mini Chatbot</title>
+  <meta charset="UTF-8">
+  <title>Chatbot AstroPhoenix</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 10px;
+    }
+    #chat-box {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 10px;
+      height: 400px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      background-color: #f9f9f9;
+    }
+    .message {
+      margin: 5px 0;
+    }
+    .user {
+      text-align: right;
+      color: blue;
+    }
+    .bot {
+      text-align: left;
+      color: green;
+    }
+    #userInput {
+      width: 80%;
+      padding: 10px;
+      font-size: 16px;
+    }
+    #sendBtn {
+      padding: 10px;
+      font-size: 16px;
+    }
+  </style>
 </head>
 <body>
-    <h1>🤖 Mon mini chatbot</h1>
-    <input type="text" id="userInput" placeholder="Écris ton message..." />
-    <button onclick="sendMessage()">Envoyer</button>
-    <p id="response"></p>
+  <h1>🤖 AstroBot</h1>
+  <div id="chat-box"></div>
+  <input type="text" id="userInput" placeholder="Écris ton message..." />
+  <button id="sendBtn" onclick="sendMessage()">Envoyer</button>
 
-    <script>
-        async function sendMessage() {
-            const message = document.getElementById("userInput").value;
-            const responseElement = document.getElementById("response");
+  <script>
+    const chatBox = document.getElementById("chat-box");
 
-            const res = await fetch("/chat", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ message: message })
-            });
+    async function sendMessage() {
+      const input = document.getElementById("userInput");
+      const message = input.value.trim();
+      if (!message) return;
 
-            const data = await res.json();
+      // Affiche le message utilisateur
+      chatBox.innerHTML += `<div class="message user"><strong>Moi:</strong> ${message}</div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+      input.value = "";
 
-            if (data.reply) {
-                responseElement.textContent = "🤖: " + data.reply;
-            } else {
-                responseElement.textContent = "⚠️ Erreur : " + data.error;
-            }
+      try {
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ message })
+        });
+
+        const data = await res.json();
+
+        if (data.reply) {
+          chatBox.innerHTML += `<div class="message bot"><strong>Bot:</strong> ${data.reply}</div>`;
+        } else {
+          chatBox.innerHTML += `<div class="message bot"><strong>Erreur:</strong> ${data.error}</div>`;
         }
-    </script>
+
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+      } catch (err) {
+        chatBox.innerHTML += `<div class="message bot"><strong>Erreur réseau :</strong> ${err.message}</div>`;
+      }
+    }
+  </script>
 </body>
 </html>

@@ -24,8 +24,9 @@ def chat():
 
     try:
         #response = openai.ChatCompletion.create(
+        #model="gpt-3.5-turbo",
         response = client.chat.completions.create(    
-            model="gpt-3.5-turbo",
+            model="gpt-4o",
             messages=[{"role": "user", "content": user_message}]
         )
         #reply = response.choices[0].message["content"].strip()
