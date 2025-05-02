@@ -28,8 +28,22 @@ def chat():
         return jsonify({"error": "Message vide"}), 400
 
     # Initialise l'historique si vide
+    #if "history" not in session:
+    #    session["history"] = []
+
     if "history" not in session:
-        session["history"] = []
+        session["history"] = [
+            {
+                "role": "system",
+                "content": (
+                    "Tu es un assistant amical, qui parle sur un ton décontracté, en mode 'poto'. "
+                    "Tu ne donnes jamais de réponse de plus de 100 mots. "
+                    "Tu fais des réponses claires, pas pompeuses. "
+                    "Pas de formules toutes faites, pas de 'je suis un modèle d'OpenAI'."
+                )
+            }
+        ]
+
 
     # Ajoute le message utilisateur à l'historique
     session["history"].append({"role": "user", "content": user_message})
