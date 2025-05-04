@@ -2,85 +2,156 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Chatbot AstroPhoenix</title>
+  <title>ShopBot - Assistant IA pour votre shopping</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 30px auto;
-      padding: 10px;
+      background-color: #f3f4f6;
+      font-family: sans-serif;
     }
-    #chat-box {
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 10px;
-      height: 400px;
-      overflow-y: auto;
-      margin-bottom: 10px;
-      background-color: #f9f9f9;
-    }
-    .message {
-      margin: 5px 0;
-    }
-    .user {
-      text-align: right;
-      color: blue;
-    }
-    .bot {
-      text-align: left;
-      color: green;
-    }
-    #userInput {
-      width: 80%;
-      padding: 10px;
-      font-size: 16px;
-    }
-    #sendBtn {
-      padding: 10px;
-      font-size: 16px;
+    .face {
+      position: absolute;
+      bottom: 6rem;
+      left: 0.5rem;
+      font-size: 6rem;
+      opacity: 0.4;
+      z-index: 0;
+      transition: all 0.3s ease;
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
-  <h1>🤖 AstroBot</h1>
-  <div id="chat-box"></div>
-  <input type="text" id="userInput" placeholder="Écris ton message..." />
-  <button id="sendBtn" onclick="sendMessage()">Envoyer</button>
+
+  <!-- Contenu de fausse boutique -->
+  <header class="bg-white shadow">
+    <div class="max-w-7xl mx-auto px-4 py-6">
+      <h1 class="text-3xl font-bold text-gray-900">ShopBot Store</h1>
+      <p class="text-gray-600 text-sm">Votre assistant IA vous aide à faire le bon choix</p>
+    </div>
+  </header>
+  <main class="py-10 px-4 max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="bg-white p-4 rounded-lg shadow hover:shadow-md">
+      <img src="/images/image1.png" alt="Produit 1" class="w-full rounded">
+      <h2 class="text-lg font-semibold mt-2">Casque Bluetooth X900</h2>
+      <p class="text-gray-500 text-sm">Son haute fidélité et réduction de bruit active</p>
+      <span class="block mt-1 font-bold text-blue-600">99,90 €</span>
+    </div>
+    <div class="bg-white p-4 rounded-lg shadow hover:shadow-md">
+      <img src="/images/image2.png" alt="Produit 2" class="w-full rounded">
+      <h2 class="text-lg font-semibold mt-2">Montre connectée ProFit</h2>
+      <p class="text-gray-500 text-sm">Suivi santé et notifications intelligentes</p>
+      <span class="block mt-1 font-bold text-blue-600">129,00 €</span>
+    </div>
+    <div class="bg-white p-4 rounded-lg shadow hover:shadow-md">
+      <img src="/images/image3.png" alt="Produit 3" class="w-full rounded">
+      <h2 class="text-lg font-semibold mt-2">Lunettes de soleil NeoVision</h2>
+      <p class="text-gray-500 text-sm">Protection UV400 et style futuriste</p>
+      <span class="block mt-1 font-bold text-blue-600">59,95 €</span>
+    </div>
+    <div class="bg-white p-4 rounded-lg shadow hover:shadow-md">
+      <img src="/images/image4.png" alt="Produit 4" class="w-full rounded">
+      <h2 class="text-lg font-semibold mt-2">Mini Drone AirPix</h2>
+      <p class="text-gray-500 text-sm">Capture des photos aériennes avec stabilisation</p>
+      <span class="block mt-1 font-bold text-blue-600">189,00 €</span>
+    </div>
+    <div class="bg-white p-4 rounded-lg shadow hover:shadow-md">
+      <img src="/images/image5.png" alt="Produit 5" class="w-full rounded">
+      <h2 class="text-lg font-semibold mt-2">Sac à dos UrbanPack</h2>
+      <p class="text-gray-500 text-sm">Étanche, antivol et ports USB intégrés</p>
+      <span class="block mt-1 font-bold text-blue-600">74,50 €</span>
+    </div>
+    <div class="bg-white p-4 rounded-lg shadow hover:shadow-md">
+      <img src="/images/image6.png" alt="Produit 6" class="w-full rounded">
+      <h2 class="text-lg font-semibold mt-2">Lampe de chevet Aurora</h2>
+      <p class="text-gray-500 text-sm">Éclairage doux avec changement de couleur tactile</p>
+      <span class="block mt-1 font-bold text-blue-600">39,95 €</span>
+    </div>
+  </main>
+
+  <!-- Bulle de chat -->
+  <div id="chat-toggle" class="fixed bottom-6 right-6 px-4 py-3 bg-blue-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer z-50 hover:scale-105 transition-transform">
+    <span id="chat-icon" class="text-white text-lg">🤖 Ouvre ShopBot</span>
+  </div>
+
+  <!-- Fenêtre de chat -->
+  <div id="chat-box" class="fixed bottom-20 right-6 w-[28rem] h-[30rem] bg-white rounded-lg shadow-xl border border-gray-300 hidden flex flex-col z-50">
+    <div class="bg-blue-600 text-white px-4 py-2 rounded-t-lg">
+      🤖 ShopBot - Besoin d'aide ? Je suis là !
+    </div>
+    <div class="relative flex-grow overflow-hidden">
+      <div id="face" class="face">🙂</div>
+      <div id="messages" class="absolute inset-0 p-4 overflow-y-auto text-sm space-y-2 z-10 ml-28 pr-2"></div>
+    </div>
+    <div class="flex border-t border-gray-200">
+      <input id="userInput" type="text" placeholder="Posez votre question ici..." class="flex-1 p-2 text-sm focus:outline-none">
+      <button id="sendBtn" class="px-4 text-blue-600 font-bold">Envoyer</button>
+    </div>
+  </div>
 
   <script>
-    const chatBox = document.getElementById("chat-box");
+    const toggleBtn = document.getElementById('chat-toggle');
+    const chatBox = document.getElementById('chat-box');
+    const sendBtn = document.getElementById('sendBtn');
+    const userInput = document.getElementById('userInput');
+    const messages = document.getElementById('messages');
+    const chatIcon = document.getElementById('chat-icon');
+    const faceEl = document.getElementById('face');
+
+    let isOpen = false;
+
+    toggleBtn.addEventListener('click', () => {
+      chatBox.classList.toggle('hidden');
+      isOpen = !isOpen;
+      chatIcon.textContent = isOpen ? '🛑 Ferme ShopBot' : '🤖 Ouvre ShopBot';
+    });
+
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    function appendMessage(role, text) {
+      const div = document.createElement('div');
+      div.className = role === 'user' ? 'text-right text-blue-700' : 'text-left text-green-700 ml-6';
+      div.innerHTML = `<span class="block">${role === 'user' ? 'Moi' : 'ShopBot'}: ${text}</span>`;
+      messages.appendChild(div);
+      // assure un défilement vers le bas après rendu
+      requestAnimationFrame(() => {
+        messages.scrollTop = messages.scrollHeight;
+      });
+    }
+
+    function setEmotionFace(emotion) {
+      const emojis = {
+        admiration: '🤗', adoration: '🥰', "appréciation esthétique": '😊', amusement: '😄',
+        anger: '😠', anxiety: '😟', awe: '🤩', discomfort: '😬', boredom: '😐',
+        calm: '🙂', serenity: '🙂', joy: '🙂', confusion: '😕', envy: '😏',
+        disgust: '🤢', excitement: '😃', fear: '😨', horror: '😱', interest: '🧐',
+        nostalgia: '🥹', relief: '😮‍💨', romance: '😍', sadness: '😢',
+        satisfaction: '😋', surprise: '😯', neutral: '🙂'
+      };
+      faceEl.textContent = emojis[emotion] || '🙂';
+    }
 
     async function sendMessage() {
-      const input = document.getElementById("userInput");
-      const message = input.value.trim();
-      if (!message) return;
-
-      // Affiche le message utilisateur
-      chatBox.innerHTML += `<div class="message user"><strong>Moi:</strong> ${message}</div>`;
-      chatBox.scrollTop = chatBox.scrollHeight;
-      input.value = "";
+      const msg = userInput.value.trim();
+      if (!msg) return;
+      appendMessage('user', msg);
+      userInput.value = '';
 
       try {
-        const res = await fetch("/chat", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ message })
+        const res = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: msg })
         });
-
         const data = await res.json();
-
-        if (data.reply) {
-          chatBox.innerHTML += `<div class="message bot"><strong>Bot:</strong> ${data.reply}</div>`;
-        } else {
-          chatBox.innerHTML += `<div class="message bot"><strong>Erreur:</strong> ${data.error}</div>`;
-        }
-
-        chatBox.scrollTop = chatBox.scrollHeight;
-
+        appendMessage('bot', data.reply || 'Erreur : réponse vide');
+        setEmotionFace(data.emotion || 'neutral');
       } catch (err) {
-        chatBox.innerHTML += `<div class="message bot"><strong>Erreur réseau :</strong> ${err.message}</div>`;
+        appendMessage('bot', 'Erreur de connexion au serveur');
+        setEmotionFace('neutral');
       }
     }
   </script>
